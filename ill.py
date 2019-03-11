@@ -80,7 +80,8 @@ subs = get( z0to3[0]['subhalos'] )
 # at this level it only gives gal mass, sfr in results, however url given takes you to more info
 
 sub = get( subs['results'][0]['url'] )
-print(sub)
+#print(sub)
+print("test")
 #print(len(subs['results']))
 #subs = get( snap['subhalos'], {'limit':subs['count']} )
 
