@@ -50,8 +50,10 @@ def zwindow(snaps,zmin,zmax):
 
 with open(r"zwindow.pkl", "rb") as f:
 	z0to3 = pickle.load(f)
-print(len(z0to3))
-print(z0to3[-1]['redshift'],z0to3[0]['redshift'])
+
+
+print('# of snapshots in window z ~ 0-3:',len(z0to3))
+print('Min/Max snap z in window:',z0to3[-1]['redshift'],z0to3[0]['redshift'])
 
 """
 Important distinction on faq about difference between group and subgroup...
@@ -66,44 +68,37 @@ The first type are computed with a friends-of-friends algorithm, while the secon
 The "Central" or "Primary" subhalo, of which there can be only one per FoF halo, which is by construction the most massive.
 "Satellite" or "secondary" subhalos, of which there can be zero or one or many.
 """
-#snap = get( snaps[-1]['url'] )
-#print(snap)
-# subs ~ subhalos what ill calls a galaxy
-subs = get( z0to3[0]['subhalos'] )
-#print(subs.keys())
-#print(subs['count'])
-#print(subs['results'][0])
+
 # you can order the subs from the get at a snap in order of a parameter like mass, the minus sign is descending order largest first in the list; limit again to just grab 20 most massive at the given z
 #subs = get( snap['subhalos'], {'limit':20, 'order_by':'-mass_stars'} )
 # the count gives how many gals at the given z snap
 # if you want galaxy info for some it needs argument results however defaults to just doing for 100 galaxies unless you change limit 
 # at this level it only gives gal mass, sfr in results, however url given takes you to more info
 
-sub = get( subs['results'][0]['url'] )
+#sub = get( subs['results'][0]['url'] )
 #print(sub)
-print("test")
+#print('Keys available for dict of galaxy data:',[i for i in sub])
+#print(sub['sfr'])
 #print(len(subs['results']))
 #subs = get( snap['subhalos'], {'limit':subs['count']} )
 
+# 1000 for now maybe include all later...is order 100,000 at each z snap
+def gals_zwindow(zwindow = z0to3):
+	subs = [get(z0to3[i]['subhalos'],{'limit':1000}) for i in range(len(z0to3))]
+	with open('gals_zwindow.pkl', 'wb') as f:
+		pickle.dump(subs, f)
+	return subs
+#gals_z0to3 = gals_zwindow()
+#print(len(gals_z0to3))
+
+with open(r"gals_zwindow.pkl", "rb") as f:
+	gals_z0to3 = pickle.load(f)
+print(len(gals_z0to3))
+print(len(gals_z0to3[0]))
+print(len(gals_z0to3[0]['results']))
 
 
-"""
 
 
-# first convert log solar masses into group catalog units
-mass_min = 10**11.9 / 1e10 * 0.704
-mass_max = 10**12.1 / 1e10 * 0.704
-
-# form the search_query string by hand for once
-search_query = "?mass__gt=" + str(mass_min) + "&mass__lt=" + str(mass_max)
-
-# form the url and make the request
-url = "http://www.illustris-project.org/api/Illustris-1/snapshots/z=2/subhalos/" + search_query
-subhalos = get(url)
-subhalos['count']
 
 
-ids = [ subhalos['results'][i]['id'] for i in range(5) ]
-print(ids)
-
-"""
